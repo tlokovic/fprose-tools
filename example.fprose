@@ -1,0 +1,122 @@
+@TITLE The Actual Best Story Ever
+@AUTHOR William Shakespeare, Probably
+@GENRE Sci-Fi Historical Time Travel Romantic WW2 Naval Battle Fiction
+
+@! Groupings.  For each one, provide the level at which it hides  For
+@! non-top-level groupings, provide the parent grouping as well.
+@GROUPING ACT hidelevel=6
+@GROUPING CHAPTER hidelevel=5 parent=ACT
+
+@! Comment types.  For each one, provide the level at which it hides,
+@COMMENT MAJOR hidelevel=4
+@COMMENT MINOR hidelevel=3
+@COMMENT NOTE hidelevel=2
+@COMMENT TODO hidelevel=2
+
++ACT Act 1
+
++CHAPTER Chapter 1
+
+!MAJOR We meet the main character.
+
+Once upon a time there was a guy named Bob.  He lived in the city.  He had dark hair, I guess.  I'm not a details guy.  But he lived in an apartment on the east side of town, a detail which may become important later.  I haven't decided.
+
+This is going well so far, don't you think?
+
+!TODO Add some more detail here.
+
+The sun shone off the windows like the glistening of a fire off of a highly reflective surface.
+
+!NOTE yay
+
+The wind whistled, figuratively, through the trees.  A passing man whistled literally through the trees, but lower down, because he was earthbound, as is standard for passersby of the human variety.
+
+!MINOR We learn about his daily routine.
+
+Bob liked to go to the movies.  He didn't watch the movies.  He just liked to go there for the popcorn and then leave.
+
+!MAJOR Something bad happens.
+
+Bob tripped.
+
++CHAPTER Chapter 2
+
+!MAJOR We meet the bad guy.
+
+Fred was a dastardly fellow.  Check out his eyebrows.  Freaky, right?  You can tell a lot about a man by his eyebrows, but mostly his dastardliness.
+
+!MINOR We learn about the mean stuff he does.
+
+Fred likes to litter.  Usually he picks it up later, but sometimes he doesn't.
+
+!MAJOR The good guy and bad guy meet.
+
+One day Bob and Fred ran into each other on the street.
+
++ACT Act 2
+
++CHAPTER Chapter 3
+
+!MAJOR Rising action 1
+
+All sorts of crazy shenanigans.
+
+!MINOR Funny gag
+
+Bob stepped on rake.
+
++CHAPTER Chapter 4
+
+!MAJOR Rising action 2
+
+Car chases, explosions, dinosaurs probably.
+
+!MINOR Touching death scene
+
+Bob's mentor, Masta Pasta Maker from Italy, suddently died!
+
+!MAJOR Surprising twist
+
+dfg hsdflg hlkjdhflkgdfg
+
++ACT Act 3
+
++CHAPTER Chapter 5
+
+!MINOR Killing time!
+
+A chapter with no major things.
+
++CHAPTER Chapter 5
+
+!MAJOR Mentor dies
+
+gf dfghfg
+fgh
+fh fgh fgh fgh fg
+
+!MINOR Introduce planet B
+
+
+
+!MINOR TODO sdfsfjkhsdf
+
+!MINOR Gag involving exploding pants
+
+dfgdf gdfg
+
++CHAPTER Chapter 6
+
+!MAJOR The final confrontation.
+
+Bob glared at Fred.  Fred glared at Bob.
+
+Fred littered.  Bob glared even more sternly.
+
+!TODO Add some extra detail here.
+
+Fred got bored and went home.
+
+!MAJOR Denoument
+
+Bob made it home, tripping only three or four times.
