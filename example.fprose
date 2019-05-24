@@ -1,122 +1,131 @@
-@TITLE The Actual Best Story Ever
-@AUTHOR William Shakespeare, Probably
-@GENRE Sci-Fi Historical Time Travel Romantic WW2 Naval Battle Fiction
++metadata
+!title The Actual Best Story Ever
+!author William Shakespeare, Probably
 
-@! Groupings.  For each one, provide the level at which it hides  For
-@! non-top-level groupings, provide the parent grouping as well.
-@GROUPING ACT hidelevel=6
-@GROUPING CHAPTER hidelevel=5 parent=ACT
++encyclopedia
 
-@! Comment types.  For each one, provide the level at which it hides,
-@COMMENT MAJOR hidelevel=4
-@COMMENT MINOR hidelevel=3
-@COMMENT NOTE hidelevel=2
-@COMMENT TODO hidelevel=2
+++theme {bobs_arachnophobia} Bob’s Fear of Spiders
+!relation This is [bob]’s weakness
 
-+ACT Act 1
+Bob is really afraid of spiders.  This is important to the story somehow.
 
-+CHAPTER Chapter 1
+++theme {feb_29} February 29
 
-!MAJOR We meet the main character.
+This date is conspicuous in several parts of the story.
+
+++character {bob} Bob Smith
+!relation Bob’s nemesis is [fred].
+
+++character {fred} Fred Jones
+!relation Fred’s nemesis is [bob].
+!birthday [feb_29]
+
++narrative
+
+++act Act 1
+
++++chapter Chapter 1
+
+!plot_major We meet the main character [bob].
 
 Once upon a time there was a guy named Bob.  He lived in the city.  He had dark hair, I guess.  I'm not a details guy.  But he lived in an apartment on the east side of town, a detail which may become important later.  I haven't decided.
 
 This is going well so far, don't you think?
 
-!TODO Add some more detail here.
+!todo Illustrate [bobs_arachnophobia].
 
 The sun shone off the windows like the glistening of a fire off of a highly reflective surface.
 
-!NOTE yay
+!note yay
 
 The wind whistled, figuratively, through the trees.  A passing man whistled literally through the trees, but lower down, because he was earthbound, as is standard for passersby of the human variety.
 
-!MINOR We learn about his daily routine.
+!plot_minor We learn about [bob]’s daily routine.
 
 Bob liked to go to the movies.  He didn't watch the movies.  He just liked to go there for the popcorn and then leave.
 
-!MAJOR Something bad happens.
+!plot_major Something bad happens.
 
 Bob tripped.
 
-+CHAPTER Chapter 2
++++chapter Chapter 2
 
-!MAJOR We meet the bad guy.
+!plot_major We meet the bad guy, [fred].
 
 Fred was a dastardly fellow.  Check out his eyebrows.  Freaky, right?  You can tell a lot about a man by his eyebrows, but mostly his dastardliness.
 
-!MINOR We learn about the mean stuff he does.
+!plot_minor We learn about the mean stuff [fred] does.
 
 Fred likes to litter.  Usually he picks it up later, but sometimes he doesn't.
 
-!MAJOR The good guy and bad guy meet.
+!plot_major [bob] and [fred] meet for the first time.
 
 One day Bob and Fred ran into each other on the street.
 
-+ACT Act 2
+++act Act 2
 
-+CHAPTER Chapter 3
++++chapter Chapter 3
 
-!MAJOR Rising action 1
+!plot_major Rising action 1
 
 All sorts of crazy shenanigans.
 
-!MINOR Funny gag
+!plot_minor Funny gag
 
 Bob stepped on rake.
 
-+CHAPTER Chapter 4
++++chapter Chapter 4
 
-!MAJOR Rising action 2
+!plot_major Rising action 2, which occurs on [feb_29]
 
 Car chases, explosions, dinosaurs probably.
 
-!MINOR Touching death scene
+!plot_minor Touching death scene
 
 Bob's mentor, Masta Pasta Maker from Italy, suddently died!
 
-!MAJOR Surprising twist
+!plot_major Surprising twist
 
 dfg hsdflg hlkjdhflkgdfg
 
-+ACT Act 3
+++act Act 3
 
-+CHAPTER Chapter 5
++++chapter Chapter 5
 
-!MINOR Killing time!
+!plot_minor Killing time!
 
 A chapter with no major things.
 
-+CHAPTER Chapter 5
++++chapter Chapter 5
 
-!MAJOR Mentor dies
+!plot_major Mentor dies
 
 gf dfghfg
 fgh
 fh fgh fgh fgh fg
 
-!MINOR Introduce planet B
+!plot_minor Introduce planet B
 
 
 
-!MINOR TODO sdfsfjkhsdf
+!plot_minor TODO sdfsfjkhsdf
 
-!MINOR Gag involving exploding pants
+!plot_minor Gag involving exploding pants
 
 dfgdf gdfg
 
-+CHAPTER Chapter 6
++++chapter Chapter 6
 
-!MAJOR The final confrontation.
+!plot_major The final confrontation, in which [bob] finally overcomes [bobs_arachnophobia] at the last second.
 
 Bob glared at Fred.  Fred glared at Bob.
 
 Fred littered.  Bob glared even more sternly.
 
-!TODO Add some extra detail here.
+!todo Add some extra detail here.
 
 Fred got bored and went home.
 
-!MAJOR Denoument
+!plot_major Denoument
 
 Bob made it home, tripping only three or four times.

@@ -18,27 +18,14 @@
 ;; Keymap used in fprose mode.
 (defvar fprose-mode-map
   (let ((map (make-keymap)))
-    (define-key map "\M-." 'fprose-hide-more)
-    (define-key map "\M-," 'fprose-hide-less)
     (define-key map "\"" 'fprose-insert-or-cycle-double-quote)
     (define-key map "'" 'fprose-insert-or-cycle-single-quote)
     (define-key map "-" 'fprose-insert-or-cycle-hyphen)
-    (define-key map "\M-u" 'fprose-unhide-string)
+    (define-key map "\M-." 'fprose-follow-link)
     map)
   "Keymap for Fprose major mode")
 
-;; True if the line starting at point is a grouping line.
-(defun fprose--line-is-grouping () (eq (char-after) ?\+) )
-
-;; The label for the grouping line starting at point, or nil if it isn't a
-;; grouping line.
-(defun fprose--line-grouping-label ()
-  (if (looking-at "\\+\\([[:alnum:]]+\\)")
-      (match-string-no-properties 1)
-    nil)
-  )
-
-(defun fprose-replace-prev-char (c)
+(defun fprose--replace-prev-char (c)
   (delete-backward-char 1)
   (insert c)
   )
@@ -49,15 +36,15 @@
     (cond
      ;; Cycle from straight double quote to open double quote:
      ((eq (char-before) 34)
-      (fprose-replace-prev-char 8220)
+      (fprose--replace-prev-char 8220)
       (message "Open double quote %s" cycle))
      ;; Cycle from open double quote to close double quote:
      ((eq (char-before) 8220)
-      (fprose-replace-prev-char 8221)
+      (fprose--replace-prev-char 8221)
       (message "Close double quote %s" cycle))
      ;; Cycle from close double quote to straight double quote:
      ((eq (char-before) 8221)
-      (fprose-replace-prev-char 34)
+      (fprose--replace-prev-char 34)
       (message "Straight double quote %s" cycle))
      ;; Choose to insert open or closed depending on context:
      (t (if
@@ -86,15 +73,15 @@
     (cond
      ;; Cycle from straight single quote to open single quote:
      ((eq (char-before) 39)
-      (fprose-replace-prev-char 8216)
+      (fprose--replace-prev-char 8216)
       (message "Open single quote %s" cycle))
      ;; Cycle from open single quote to close single quote:
      ((eq (char-before) 8216)
-      (fprose-replace-prev-char 8217)
+      (fprose--replace-prev-char 8217)
       (message "Close single quote %s" cycle))
      ;; Cycle from close single qote to straight single quote:
      ((eq (char-before) 8217)
-      (fprose-replace-prev-char 39)
+      (fprose--replace-prev-char 39)
       (message "Straight single quote %s" cycle))
      ;; Choose to insert open or closed depending on context:
      (t (if
@@ -123,17 +110,17 @@
     (cond
      ;; Cycle from minus/hyphen to em dash:
      ((eq (char-before) 45)
-      (fprose-replace-prev-char 8212)
+      (fprose--replace-prev-char 8212)
       (message
        "em dash (sentence splits) %s" cycle))
      ;; Cycle from em dash to en dash:
      ((eq (char-before) 8212)
-      (fprose-replace-prev-char 8211)
+      (fprose--replace-prev-char 8211)
       (message
        "en dash (ranges, nested compound terms) %s" cycle))
      ;; Cycle from en dash to minus/hyphen:
      ((eq (char-before) 8211)
-      (fprose-replace-prev-char 45)
+      (fprose--replace-prev-char 45)
       (message
        "minus/hyphen (math, compound terms) %s" cycle))
      ;; Insert minus/hyphen:
@@ -144,72 +131,19 @@
     )
   )
 
-;; The grouping level for the line starting at point, or nil if it isn't a
-;; grouping line or if it's not a valid grouping level.
-(defun fprose--line-grouping-level (grouping-levels)
-  (let ((r (assoc (fprose--line-grouping-label) grouping-levels)))
-    (if r (elt r 1) 1)
-    )
-  )
-
-;; True if the line starting at point is a comment line.
-(defun fprose--line-is-comment () (eq (char-after) ?\!) )
-
-;; The label for the comment line starting at point, or nil if it isn't a
-;; comment line.
-(defun fprose--line-comment-label ()
-  (if (looking-at "\\!\\([[:alnum:]]+\\)")
-      (match-string-no-properties 1)
-    nil)
-  )
-
-;; The grouping level for the line starting at point, or nil if it isn't a
-;; grouping line or if it's not a valid grouping level.
-(defun fprose--line-comment-level (comment-levels)
-  (let ((r (assoc (fprose--line-comment-label) comment-levels)))
-    (if r (elt r 1) 1)
-    )
-  )
-
-;; True if the line starting at point is a config line.
-(defun fprose--line-is-config () (eq (char-after) ?\@) )
-
-;; True if the line starting at point is a prose line, which define as any line
-;; that is not group, comment, or config.
-(defun fprose--line-is-prose ()
-  (not
-   (or (fprose--line-is-grouping)
-       (fprose--line-is-comment)
-       (fprose--line-is-config)
-       )
-   )
-  )
-
-;; The current level of hiding.
-(setq fprose-hide-level 0)
-
-;; True if the line starting at point should be hidden at the current hiding
-;; levels.
-(defun fprose--should-hide-line (grouping-levels comment-levels show-string)
-  (cond
-   ((and show-string (looking-at-p (concat ".*" (regexp-quote show-string)))) nil)
-   ((fprose--line-is-prose) (> fprose-hide-level 0))
-   ((fprose--line-is-grouping)
-    (let ((line-level (fprose--line-grouping-level grouping-levels)))
-      (<= line-level fprose-hide-level)))
-   ((fprose--line-is-comment)
-    (let ((line-level (fprose--line-comment-level comment-levels)))
-      (<= line-level fprose-hide-level)))
-   (t nil)))
+; Current string we're folded to.  Buffer local.
+(setq fprose-folded-to-string nil)
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.fprose\\'" . fprose-mode))
 
 (defconst fprose-font-lock-keywords
   (list
-   '("^!.*$" . font-lock-comment-face)
-   '("^+.*$" . font-lock-function-name-face)
-   '("^@.*$" . font-lock-constant-face)
+   '("^![[:alpha:]_]+" . font-lock-comment-face)
+   '("^++[[:alpha:]_]+" . font-lock-function-name-face)
+   '("{[[:alnum:]_]+}" . font-lock-constant-face)
+   '("\\[[[:alnum:]_]+\\]" . font-lock-constant-face)
+
    )
   "Default highlighting for fprose mode"
   )
@@ -220,29 +154,23 @@
   (kill-all-local-variables)
   (set (make-local-variable 'font-lock-defaults)
        '(fprose-font-lock-keywords t))
-  (set (make-local-variable 'fprose-hide-level) 0)
-  (set (make-local-variable 'fprose-hide-level) 0)
+  (set (make-local-variable 'fprose-folded-to-string) nil)
   (setq major-mode 'fprose-mode)
   (use-local-map fprose-mode-map)
   (setq mode-name "fprose")
   (visual-line-mode)
+  (add-hook 'isearch-mode-end-hook 'fprose-end-isearch nil t)
+  (add-hook 'isearch-update-post-hook 'fprose-fold-to-lines-containing-isearch nil t)
   (run-hooks 'fprose-mode-hook))
 
-(defun fprose--hidden-label (words)
-  (if (> words 0)
-      (format "<... %d words ...>" words)
-    "<...>")
-  )
-
-(defun fprose--hide-region (begin end words)
+(defun fprose--hide-region (begin end num)
   (when begin
     (let ((o (make-overlay begin end nil t nil)))
       (overlay-put o 'type 'fprose-hidden)
       (overlay-put o 'invisible t)
     (overlay-put o 'face 'font-lock-builtin-face)
     (overlay-put o 'display
-		 (propertize (fprose--hidden-label words)
-			     'face 'font-lock-string-face))
+		 (propertize "<...>" 'face 'font-lock-string-face))
     (overlay-put o 'evaporate t))
     (deactivate-mark))
   )
@@ -251,132 +179,205 @@
   (when (eq (overlay-get it 'type) 'fprose-hidden)
     (delete-overlay it)))
 
-(defun fprose--find-grouping-and-comment-levels ()
-  (let ((grouping-levels ())
-	(comment-levels ()))
-    (save-excursion
-      (goto-char (point-min))
-      (while (looking-at "@\\|[[:space:]]*$")
-	(cond ((looking-at "\\@GROUPING \\([[:alnum:]]+\\).*hidelevel=\\([[:digit:]]+\\)")
-	       (setq grouping-levels (cons
-				      (list (match-string-no-properties 1) (string-to-number (match-string-no-properties 2)))
-				      grouping-levels)))
-	      ((looking-at "\\@COMMENT \\([[:alnum:]]+\\).*hidelevel=\\([[:digit:]]+\\)")
-	       (setq comment-levels (cons
-				     (list (match-string-no-properties 1) (string-to-number (match-string-no-properties 2)))
-				     comment-levels)))
-	      )
-	(forward-line 1)
-	)
-    (list grouping-levels comment-levels)
-    )
-    )
-  )
-
-(defun fprose--update-display-level (grouping-levels comment-levels show-string)
-  ; First unhide everything.
+(defun fprose--delete-all-overlays ()
   (mapc 'fprose--delete-my-overlay
         (overlays-in (point-min) (point-max)))
-  (save-excursion
-    (goto-char (point-min))
-    (while (and (not (eobp)) (not (fprose--line-is-grouping)))
-      (forward-line 1)
-      )
-    (previous-line)
-    (end-of-line)
-    (let ((begin nil) (end nil) (words 0))
-      (while (not (eobp))
-	(let ((end-of-prev-line (point-marker)))
-	  (forward-line 1)
-	  (if (not (fprose--should-hide-line grouping-levels comment-levels show-string))
-	      (progn
-		(fprose--hide-region begin end words)
-		(setq begin nil)
-		(setq end nil)
-		(end-of-line)
-		(setq words 0)
-		)
-	    (let ((is-prose (fprose--line-is-prose)))
-	      (setq begin (or begin end-of-prev-line))
-	      (end-of-line)
-	      (setq end (point-marker))
-	      (when is-prose
-		  (setq words (+ words
-				 (count-words-region
-				  end-of-prev-line end))))
-	      )
-	    )
-	  ) ; let
+  )
+
+(defun fprose-fold-to-lines (l)
+  (fprose--delete-all-overlays)
+  (when l
+    (let ((prev-end 1)
+	  (cur l)
+	  (num 0))
+      (while cur
+	(when (> (elt (car cur) 0) prev-end)
+	  (fprose--hide-region prev-end (elt (car cur) 0) num)
+	  (setq num (+ num 1))
+	  ) ; when
+	(setq prev-end (elt (car cur) 1))
+	(setq cur (cdr cur))
 	) ; while
-      (fprose--hide-region begin end words)
+      (when (< prev-end (point-max))
+	(fprose--hide-region prev-end (point-max) num)
+	) ; when
       ) ; let
-    ) ; save-excursion
-  ) ; defun
-
-(defun fprose--labels-at-or-below-level (levels level)
-  (cond ((and levels (<= (elt (car levels) 1) level))
-	 (cons (car (car levels)) (fprose--labels-at-or-below-level (cdr levels) level)))
-	(levels (fprose--labels-at-or-below-level (cdr levels) level))
-	(t nil))
+    (recenter)
+    ); when
   )
 
-(defun fprose--max-level (levels sofar)
-  (cond ((and levels (> (elt (car levels) 1) sofar))
-	 (fprose--max-level (cdr levels) (elt (car levels) 1)))
-	(levels (fprose--max-level (cdr levels) sofar))
-	(t sofar))
-  )
-
-(defun fprose--describe-hide-level (grouping-levels comment-levels)
-  (if (eq 0 fprose-hide-level) "Hide level 0: Show all"
-    (format "Hide level %d: Hide prose%s%s" fprose-hide-level
-	    (mapconcat (lambda (x) (concat " !" x))
-		       (fprose--labels-at-or-below-level comment-levels fprose-hide-level) "")
-	    (mapconcat (lambda (x) (concat " +" x))
-		       (fprose--labels-at-or-below-level grouping-levels fprose-hide-level) "")
-	    )
-    )
-  )
-
-(defun fprose-hide-more ()
-  (interactive)
-  (let* ((levels (fprose--find-grouping-and-comment-levels))
-	(grouping-levels (elt levels 0))
-	(comment-levels (elt levels 1))
-	(max-hide-level (max (fprose--max-level grouping-levels 1) (fprose--max-level comment-levels 1))))
-    (setq fprose-hide-level (max 0 (min (+ fprose-hide-level 1) max-hide-level)))
-    (fprose--update-display-level grouping-levels comment-levels nil)
-    (message (fprose--describe-hide-level grouping-levels comment-levels))
-    )
-  )
-
-(defun fprose-hide-less ()
-  (interactive)
-  (let* ((levels (fprose--find-grouping-and-comment-levels))
-	(grouping-levels (elt levels 0))
-	(comment-levels (elt levels 1))
-	(max-hide-level (max (fprose--max-level grouping-levels 1) (fprose--max-level comment-levels 1))))
-    (setq fprose-hide-level (max 0 (min (- fprose-hide-level 1) max-hide-level)))
-    (fprose--update-display-level grouping-levels comment-levels nil)
-    (message (fprose--describe-hide-level grouping-levels comment-levels))
-    )
-  )
-
-(defun fprose-unhide-string (s)
+(defun fprose-fold-to-lines-containing-string (s)
   (interactive "sUnhide string: ")
-  (let* ((levels (fprose--find-grouping-and-comment-levels))
-	 (grouping-levels (elt levels 0))
-	 (comment-levels (elt levels 1)))
-    (fprose--update-display-level grouping-levels comment-levels s)
+  (fprose-fold-to-lines (fprose-lines-containing-string s))
+  )
+
+(defun fprose-fold-to-lines-containing-isearch ()
+  (when (not (string-equal isearch-string fprose-folded-to-string))
+    (fprose-fold-to-lines (fprose-lines-containing-string-plus-context isearch-string) )
+    (setq fprose-folded-to-string isearch-string)
     )
   )
 
-(defun fprose-unhide-last-search ()
-  (interactive)
-  (if search-ring
-      (fprose-unhide-string (car search-ring))
-    (message "No previous search string.")
+(defun fprose-end-isearch ()
+  (fprose--delete-all-overlays)
+  (setq fprose-folded-to-string nil)
+  )
+(defun fprose--section-depth (p)
+  (let ((result 0))
+    (while (eq (char-after (+ p result)) ?\+)
+      (setq result (+ result 1))
+      )
+    result
     )
+  )
+
+(defun fprose-section-lines ()
+  (let ((result nil))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^++[[:alpha:]_]+" nil t)
+	(let* ((line-begin (line-beginning-position))
+	       (line-end (line-end-position))
+	       (depth (fprose--section-depth line-begin)))
+	  (push (list (- line-begin 1) line-end depth) result)
+	  (end-of-line)
+	  ) ; let*
+	) ; while
+      ) ; save-excursion
+    (reverse result)
+    ) ; let
+  )
+
+(defun fprose-lines-containing-string (s)
+  (let ((result nil))
+    (when (and s (> (length s) 0))
+      (save-excursion
+	(goto-char (point-min))
+	(while (search-forward s nil t)
+	  (push (list (- (line-beginning-position) 1) (line-end-position)) result)
+	  (end-of-line)
+	  ) ; while
+	) ; save-excursion
+      ); when
+    (reverse result)
+    ) ; let
+  )
+
+(defun fprose-add-unprinted-from-stack (r s)
+  (if (or (not s) (and r (<= (elt (car s) 0) (elt (car r) 0))))
+      r
+    (cons (list (elt (car s) 0) (elt (car s) 1)) (fprose-add-unprinted-from-stack r (cdr s)))
+    )
+  )
+
+(defun fprose-get-square-link-name()
+  (cond ((looking-at "\\[[[:alnum:]_]+\\]")
+	 (buffer-substring (+ (match-beginning 0) 1) (- (match-end 0) 1))
+	 )
+	((looking-at "\\]")
+	 (let ((e (match-end 0)))
+	   (if (looking-back "\\[[[:alnum:]_]+" 50)
+	       (buffer-substring (+ (match-beginning 0) 1) (- e 1))
+	     nil
+	     )
+	   )
+	 )
+	((looking-at "[[:alnum:]_]+\\]")
+	 (let ((e (match-end 0)))
+	   (if (looking-back "\\[[[:alnum:]_]*" 50)
+	       (buffer-substring (+ (match-beginning 0) 1) (- e 1))
+	     nil
+	     )
+	   )
+	 )
+	(t nil)
+	)
+  )
+
+(defun fprose-get-curly-link-name()
+  (cond ((looking-at "\{[[:alnum:]_]+\}")
+	 (buffer-substring (+ (match-beginning 0) 1) (- (match-end 0) 1))
+	 )
+	((looking-at "\}")
+	 (let ((e (match-end 0)))
+	   (if (looking-back "\{[[:alnum:]_]+" 50)
+	       (buffer-substring (+ (match-beginning 0) 1) (- e 1))
+	     nil
+	     )
+	   )
+	 )
+	((looking-at "[[:alnum:]_]+\}")
+	 (let ((e (match-end 0)))
+	   (if (looking-back "\{[[:alnum:]_]*" 50)
+	       (buffer-substring (+ (match-beginning 0) 1) (- e 1))
+	     nil
+	     )
+	   )
+	 )
+	(t nil)
+	)
+  )
+
+(defun fprose-start-isearch (s)
+  (isearch-forward nil 1)
+  (isearch-yank-string s)
+  )
+
+(defun fprose-isearch-references (d)
+  (fprose-start-isearch (format "[%s]" d))
+  )
+
+(defun fprose-goto-definition (d)
+  (beginning-of-buffer)
+  (search-forward (format "{%s}" d))
+  )
+
+(defun fprose-follow-link ()
+  (interactive)
+  (let ((square (fprose-get-square-link-name)))
+    (if square
+	(fprose-goto-definition square)
+      (let ((curly (fprose-get-curly-link-name)))
+	(if curly
+	    (fprose-isearch-references curly)
+	  (message "No link or definition here.")
+	  )
+	)
+      )
+    )
+  )
+
+(defun fprose-lines-containing-string-plus-context (s)
+  (let ((result nil)
+	(section-lines (fprose-section-lines))
+	(stack nil))
+    (when (and s (> (length s) 0))
+      (save-excursion
+	(goto-char (point-min))
+	(while (search-forward s nil t)
+	  (let* ((line-begin (line-beginning-position))
+		 (line-pre-begin (- line-begin 1))
+		 (line-end (line-end-position)))
+	    (while (and section-lines (< (elt (car section-lines) 0) line-pre-begin))
+	      (while (and stack (>= (elt (car stack) 2) (elt (car section-lines) 2)))
+		(pop stack)
+		); while
+	      (push (car section-lines) stack)
+	      (setq section-lines (cdr section-lines))
+	      ) ; while
+	    (when (and section-lines (= (elt (car section-lines) 0) line-pre-begin))
+	      (setq section-lines (cdr section-lines))
+	      ) ; while
+	    ; TODO: print any unprinted things in the stack.
+	    (setq result (fprose-add-unprinted-from-stack result stack))
+	    (push (list line-pre-begin line-end) result)
+	    (end-of-line)
+	    )
+	  ) ; while
+	) ; save-excursion
+      ); when
+    (reverse result)
+    ) ; let
   )
 
 (provide 'fprose-mode)
