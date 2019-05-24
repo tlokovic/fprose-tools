@@ -324,12 +324,13 @@
   )
 
 (defun fprose-isearch-references (d)
+  (beginning-of-buffer)
   (fprose-start-isearch (format "[%s]" d))
   )
 
 (defun fprose-goto-definition (d)
-  (beginning-of-buffer)
-  (search-forward (format "{%s}" d))
+  (end-of-buffer)
+  (search-backward (format "{%s}" d))
   )
 
 (defun fprose-follow-link ()
