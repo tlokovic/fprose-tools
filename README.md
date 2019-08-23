@@ -1,7 +1,7 @@
 # fprose-tools
 
-This project contains tooling to support the fprose file format, a minimal
-markdown-like language for writing prose.
+This project contains tooling to support the fprose file format, an experimental
+minimal markdown-like language for writing prose.
 
 "fprose" stands for "foldable prose", because the format encourages the author
 to maintain both structural groupings (act, chapter, etc) and semantics markers
@@ -9,6 +9,8 @@ to maintain both structural groupings (act, chapter, etc) and semantics markers
 dynamic "code folding" (hiding and revealing parts of the document).
 
 # Copright and Licence
+
+fprose-tools is a personal project of Tom Lokovic.
 
 This is not an officially supported Google product.
 
